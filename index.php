@@ -41,6 +41,33 @@ $hotels = [
 ];
 
 
+// inizializzo il mio array uguale agli hotel iniziali
+$filteredHotels = $hotels;
+
+// per evitare il warning quando andiamo ad accedere al parametro parking-check anche quando non è stato settato nell'url
+if( isset($_GET['parking-check']) && $_GET['parking-check'] == true ) {
+    // filtrare gli hotel
+    // echo "parcheggio da filtrare";
+
+    // creo un nuovo array che conterrà gli hotel filtrati
+    $filteredHotels = [];
+
+    // ciclo gli hotel
+    foreach($hotels as $currentHotel) {
+
+        // var_dump($currentHotel);
+        // se l'hotel corrente ha il parcheggio, lo inserisco nel nuovo array
+        if($currentHotel['parking']) {
+            // lo pusho nel nuovo array
+            $filteredHotels[] = $currentHotel;
+        }
+
+    }
+
+    // per debug, mostro il nuovo array
+    // var_dump($filteredHotels);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -58,6 +85,21 @@ $hotels = [
     <div class="container py-5">
         <h1 class="mb-4">PHP - Hotel</h1>
 
+        <form method="GET" action="index.php">
+            <h2>
+                Filtri
+            </h2>
+            <div class="row row-cols-2 mb-4">
+                <div class="form-check col">
+                    <input type="checkbox" class="form-check-input" name="parking-check" id="parking-check" value="true">
+                    <label class="form-check-label" for="parking-check">Filtra per parcheggio</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Filtra</button>
+        </form>
+
+        <hr class="my-4">
+
         <table class="table border border-2">
             <thead class="table-primary">
                 <tr>
@@ -71,13 +113,14 @@ $hotels = [
             <tbody>
                 <?php
 
-                foreach($hotels as $currentHotel) {
+
+                foreach($filteredHotels as $currentHotel) {
                     
                     echo "
                     <tr>
-                        <td> " . $currentHotel['name'] . "</td>
+                        <td>" . $currentHotel['name'] . "</td>
                         <td>" . $currentHotel['description'] . "</td>
-                        <td>" . $currentHotel['parking'] . "</td>
+                        <td>" . ($currentHotel['parking'] ? 'presente' : 'assente') . "</td>
                         <td>" . $currentHotel['vote'] . "</td>
                         <td>" . $currentHotel['distance_to_center'] . " km</td>
                     </tr>
