@@ -44,8 +44,16 @@ $hotels = [
 // inizializzo il mio array uguale agli hotel iniziali
 $filteredHotels = $hotels;
 
+
+// per filtrare parcheggi:
+
+$isParkingFiltered = false;
+
 // per evitare il warning quando andiamo ad accedere al parametro parking-check anche quando non è stato settato nell'url
 if( isset($_GET['parking-check']) && $_GET['parking-check'] == true ) {
+
+    // cambio la variabile in true così poi posso utilizzarla più facilmente nel layout
+    $isParkingFiltered = true;
     // filtrare gli hotel
     // echo "parcheggio da filtrare";
 
@@ -68,6 +76,36 @@ if( isset($_GET['parking-check']) && $_GET['parking-check'] == true ) {
     // var_dump($filteredHotels);
 }
 
+
+// per filtrare per voto:
+
+// var_dump($filteredHotels);
+// echo "__________________________";
+
+$minimumVote = 0;
+
+if( isset($_GET['minimum-vote']) ) {
+
+    $minimumVote = $_GET['minimum-vote'];
+
+    // quando ho un voto minimo per cui filtrare:
+
+    // ciclo per ogni hotel già filtrato (eventualmente)
+    foreach ($filteredHotels as $index => $currentHotel) {
+
+        // se l'hotel non ha il voto uguale o superiore a quello indicato lo elimino dall'array
+        if($currentHotel['vote'] < $minimumVote) {
+            // elimino l'elemento dall'array
+            // array_splice($filteredHotels, $index, 1);
+            unset($filteredHotels[$index]);
+
+        }
+    }
+}
+
+var_dump($isParkingFiltered);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -85,18 +123,32 @@ if( isset($_GET['parking-check']) && $_GET['parking-check'] == true ) {
     <div class="container py-5">
         <h1 class="mb-4">PHP - Hotel</h1>
 
+
         <form method="GET" action="index.php">
             <h2>
                 Filtri
             </h2>
-            <div class="row row-cols-2 mb-4">
-                <div class="form-check col">
-                    <input type="checkbox" class="form-check-input" name="parking-check" id="parking-check" value="true">
+            <div class="row mb-4 row-cols-2">
+                <div class="form-check ">
+                    <input 
+                        type="checkbox" 
+                        class="form-check-input" 
+                        name="parking-check" 
+                        id="parking-check" 
+                        value="true"
+                        <?php echo $isParkingFiltered ? 'checked' : '' ?>
+                    >
                     <label class="form-check-label" for="parking-check">Filtra per parcheggio</label>
+                </div>
+                <div class="">
+                    <input type="number" name="minimum-vote" min="0" max="5" value="<?php echo $minimumVote ?>">
+                    <label for="minimum-vote">Voto minimo</label>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Filtra</button>
         </form>
+
+
 
         <hr class="my-4">
 
