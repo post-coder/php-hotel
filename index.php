@@ -96,6 +96,8 @@ if( isset($_GET['minimum-vote']) ) {
         // se l'hotel non ha il voto uguale o superiore a quello indicato lo elimino dall'array
         if($currentHotel['vote'] < $minimumVote) {
             // elimino l'elemento dall'array
+            
+            // questo metodo ci avrebbe dato problemi dato che la funzione array_splice riordina subito l'array e fa sparire gli indici iniziali
             // array_splice($filteredHotels, $index, 1);
             unset($filteredHotels[$index]);
 
